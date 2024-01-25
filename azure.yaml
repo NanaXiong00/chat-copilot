@@ -48,3 +48,7 @@ services:
     project: ./memorypipeline
     host: appservice
     language: dotnet
+hooks:
+  prepackage:
+    shell: pwsh
+    run: npm config set legacy-peer-deps true
