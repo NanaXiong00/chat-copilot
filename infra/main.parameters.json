@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "${AZURE_ENV_NAME}"
+    },
+    "location": {
+      "value": "${AZURE_LOCATION}"
+    },
+    "principalId": {
+      "value": "${AZURE_PRINCIPAL_ID}"
+    },
+    "useKeyVault": {
+      "value": "${USE_KEY_VAULT=true}"
+    },
+    "azureAdTenantId":{
+      "value": "${AZURE_AD_TENANTID=72f988bf-86f1-41af-91ab-2d7cd011db47}"
+    },
+    "frontendClientId":{
+      "value": "${FRONTEND_CLIENTID=a3cce765-bd52-4f24-96e5-e66de15519e6}"
+    },
+    "webApiClientId":{
+      "value": "${WEBAPI_CLIENTID=33a0abfc-460c-4391-b0fb-ea1d34f96afe}"
+    }
+
+  }
+}

@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: chat-copilot
+metadata:
+  template: azd-init@1.5.1
+services:
+  api:
+    project: ./webapi
+    host: appservice
+    language: dotnet
+  web:
+    project: ./webapp
+    host: staticwebapp
+    language: ts
+    dist: build
+    hooks:
+      predeploy:
+        posix:
+          shell: sh
+          run: node entrypoint.cjs -o ./build/env-config.js
+          continueOnError: false
+          interactive: false
+        windows:
+          shell: pwsh
+          run: node entrypoint.cjs -o ./build/env-config.js
+          continueOnError: false
+          interactive: false
+      # postdeploy:
+      #   windows:
+      #     shell: pwsh
+      #     run: |
+      #       if ($env:FRONTEND_CLIENTID -ne '') {
+      #         $objectId = (az ad app show --id $env:FRONTEND_CLIENTID | ConvertFrom-Json).id
+      #         $redirectUris = (az rest --method GET --uri "https://graph.microsoft.com/v1.0/applications/$objectId" --headers 'Content-Type=application/json' | ConvertFrom-Json).spa.redirectUris
+      #         $body = "{spa:{redirectUris:["
+      #         foreach ($uri in $redirectUris) { $body += "'$uri',"}
+      #         $body += ("'$env:REACT_APP_WEB_BASE_URL'" + "]}}")
+      #         az rest --method PATCH --uri "https://graph.microsoft.com/v1.0/applications/$objectId" --headers 'Content-Type=application/json' --body $body
+      #       }
+
+  searcherplugin:
+    project: ./plugins/web-searcher
+    host: appservice
+    language: dotnet
+  memorypipeline:
+    project: ./memorypipeline
+    host: appservice
+    language: dotnet
