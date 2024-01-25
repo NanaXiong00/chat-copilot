@@ -29,21 +29,18 @@ services:
         windows:
           shell: pwsh
           run: |
-            Write-Host "=======FRONTEND_CLIENTID============$env:FRONTEND_CLIENTID"
             if ($env:FRONTEND_CLIENTID -ne '') {
               $objectId = (az ad app show --id $env:FRONTEND_CLIENTID | ConvertFrom-Json).id
               $redirectUris = (az rest --method GET --uri "https://graph.microsoft.com/v1.0/applications/$objectId" --headers 'Content-Type=application/json' | ConvertFrom-Json).spa.redirectUris
               $body = "{spa:{redirectUris:["
               foreach ($uri in $redirectUris) { $body += "'$uri',"}
               $body += ("'$env:REACT_APP_WEB_BASE_URL'" + "]}}")
-              Write-Host "=======body============$body"
               az rest --method PATCH --uri "https://graph.microsoft.com/v1.0/applications/$objectId" --headers 'Content-Type=application/json' --body $body
             }
-
-  searcherplugin:
-    project: ./plugins/web-searcher
-    host: appservice
-    language: dotnet
+  # searcherplugin:
+  #   project: ./plugins/web-searcher
+  #   host: appservice
+  #   language: dotnet
   memorypipeline:
     project: ./memorypipeline
     host: appservice

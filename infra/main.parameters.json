@@ -15,13 +15,13 @@
       "value": "${USE_KEY_VAULT=true}"
     },
     "azureAdTenantId":{
-      "value": "${AZURE_AD_TENANTID=72f988bf-86f1-41af-91ab-2d7cd011db47}"
+      "value": "${AZURE_AD_TENANTID}"
     },
     "frontendClientId":{
-      "value": "${FRONTEND_CLIENTID=a3cce765-bd52-4f24-96e5-e66de15519e6}"
+      "value": "${FRONTEND_CLIENTID}"
     },
     "webApiClientId":{
-      "value": "${WEBAPI_CLIENTID=33a0abfc-460c-4391-b0fb-ea1d34f96afe}"
+      "value": "${WEBAPI_CLIENTID}"
     }
 
   }

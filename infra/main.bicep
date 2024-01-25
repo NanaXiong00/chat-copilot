@@ -41,7 +41,7 @@ param frontendClientId string = ''
 param webApiClientId string = ''
 
 @description('Whether to deploy the web searcher plugin, which requires a Bing resource')
-param deployWebSearcherPlugin bool = true
+param deployWebSearcherPlugin bool = false
 
 @allowed([
   'AzureCognitiveSearch'
@@ -50,10 +50,10 @@ param deployWebSearcherPlugin bool = true
 param memoryStore string = 'Qdrant'
 
 @description('Whether to deploy Cosmos DB for persistent chat storage')
-param deployCosmosDB bool = true
+param deployCosmosDB bool = false
 
 @description('Whether to deploy Azure Speech Services to enable input by voice')
-param deploySpeechServices bool = true
+param deploySpeechServices bool = false
 
 var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
@@ -136,9 +136,9 @@ module api './app/api.bicep' = {
     cosmosConnectString: deployCosmosDB ? cosmos.outputs.cosmosConnectString : ''
     deploySpeechServices: deploySpeechServices
     speechAccount: deploySpeechServices ? speechAccount.outputs.name : ''
-    azureAdTenantId: azureAdTenantId //
-    frontendClientId: frontendClientId //
-    webApiClientId: webApiClientId //
+    azureAdTenantId: azureAdTenantId
+    frontendClientId: frontendClientId
+    webApiClientId: webApiClientId
   }
 }
 
