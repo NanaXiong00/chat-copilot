@@ -19,24 +19,26 @@ services:
           shell: sh
           run: node entrypoint.cjs -o ./build/env-config.js
           continueOnError: false
-          interactive: false
+          interactive: true
         windows:
           shell: pwsh
           run: node entrypoint.cjs -o ./build/env-config.js
           continueOnError: false
-          interactive: false
-      # postdeploy:
-      #   windows:
-      #     shell: pwsh
-      #     run: |
-      #       if ($env:FRONTEND_CLIENTID -ne '') {
-      #         $objectId = (az ad app show --id $env:FRONTEND_CLIENTID | ConvertFrom-Json).id
-      #         $redirectUris = (az rest --method GET --uri "https://graph.microsoft.com/v1.0/applications/$objectId" --headers 'Content-Type=application/json' | ConvertFrom-Json).spa.redirectUris
-      #         $body = "{spa:{redirectUris:["
-      #         foreach ($uri in $redirectUris) { $body += "'$uri',"}
-      #         $body += ("'$env:REACT_APP_WEB_BASE_URL'" + "]}}")
-      #         az rest --method PATCH --uri "https://graph.microsoft.com/v1.0/applications/$objectId" --headers 'Content-Type=application/json' --body $body
-      #       }
+          interactive: true
+      postdeploy:
+        windows:
+          shell: pwsh
+          run: |
+            Write-Host "=======FRONTEND_CLIENTID============$env:FRONTEND_CLIENTID"
+            if ($env:FRONTEND_CLIENTID -ne '') {
+              $objectId = (az ad app show --id $env:FRONTEND_CLIENTID | ConvertFrom-Json).id
+              $redirectUris = (az rest --method GET --uri "https://graph.microsoft.com/v1.0/applications/$objectId" --headers 'Content-Type=application/json' | ConvertFrom-Json).spa.redirectUris
+              $body = "{spa:{redirectUris:["
+              foreach ($uri in $redirectUris) { $body += "'$uri',"}
+              $body += ("'$env:REACT_APP_WEB_BASE_URL'" + "]}}")
+              Write-Host "=======body============$body"
+              az rest --method PATCH --uri "https://graph.microsoft.com/v1.0/applications/$objectId" --headers 'Content-Type=application/json' --body $body
+            }
 
   searcherplugin:
     project: ./plugins/web-searcher
