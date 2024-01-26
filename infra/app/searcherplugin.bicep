@@ -2,9 +2,7 @@ param name string
 param location string = resourceGroup().location
 param tags object = {}
 param appServicePlanId string
-// param deployPackages bool
 param appInsightsInstrumentationKey string
-// param deployWebSearcherPlugin bool
 
 param strorageAccount string
 var strorageAccountId = resourceId(subscription().subscriptionId, resourceGroup().name,

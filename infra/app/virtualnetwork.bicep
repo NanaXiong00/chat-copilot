@@ -1,10 +1,5 @@
 param name string = 'virtualnetwork'
 param location string = resourceGroup().location
-// @allowed([
-//   'AzureCognitiveSearch'
-//   'Qdrant'
-// ])
-// param memoryStore string
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: name

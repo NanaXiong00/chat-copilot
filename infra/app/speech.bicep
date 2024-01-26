@@ -1,7 +1,5 @@
 param name string
 param location string = resourceGroup().location
-// param tags object = {}
-// param deploySpeechServices bool
 
 resource speechAccount 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   name: name

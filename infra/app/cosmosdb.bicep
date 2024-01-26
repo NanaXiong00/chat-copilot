@@ -1,7 +1,5 @@
 param name string
 param location string = resourceGroup().location
-// param tags object = {}
-// param deployCosmosDB bool
 
 resource cosmosAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: name

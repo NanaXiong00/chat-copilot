@@ -12,7 +12,7 @@
       "value": "${AZURE_PRINCIPAL_ID}"
     },
     "useKeyVault": {
-      "value": "${USE_KEY_VAULT=true}"
+      "value": "${USE_KEY_VAULT}"
     },
     "azureAdTenantId":{
       "value": "${AZURE_AD_TENANTID}"

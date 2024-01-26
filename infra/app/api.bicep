@@ -68,7 +68,7 @@ resource appServiceWebConfig 'Microsoft.Web/sites/config@2022-09-01' = {
     webSubnetConnection
   ]
   properties: {
-    alwaysOn: false
+    alwaysOn: true
     detailedErrorLoggingEnabled: true
     minTlsVersion: '1.2'
     netFrameworkVersion: 'v7.0'
