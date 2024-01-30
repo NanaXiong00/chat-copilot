@@ -8,38 +8,22 @@ param containers array = [
   {
     name: 'chatmessages'
     id: 'chatmessages'
-    partitionKey: {
-      paths: [
-        '/chatId'
-      ]
-    }
+    partitionKey: '/chatId'
   }
   {
     name: 'chatsessions'
     id: 'chatsessions'
-    partitionKey: {
-      paths: [
-        '/id'
-      ]
-    }
+    partitionKey: '/id'
   }
   {
     name: 'chatparticipants'
     id: 'chatparticipants'
-    partitionKey: {
-      paths: [
-        '/userId'
-      ]
-    }
+    partitionKey: '/userId'
   }
   {
     name: 'chatmemorysources'
     id: 'chatmemorysources'
-    partitionKey: {
-      paths: [
-        '/chatId'
-      ]
-    }
+    partitionKey: '/chatId'
   }
 ]
 param keyVaultName string
