@@ -17,8 +17,6 @@ param deployWebSearcherPlugin bool
 param allowedOrigins array = []
 param virtualNetworkId0 string
 param appServiceQdrantDefaultHost string
-param cosmosConnectString string
-param deployCosmosDB bool
 
 param functionAppWebSearcherPlugin string
 param searcherPluginDefaultHostName string
@@ -38,6 +36,11 @@ param deploySpeechServices bool
 param speechAccount string
 var speechAccountId = resourceId(subscription().subscriptionId, resourceGroup().name,
   'Microsoft.CognitiveServices/accounts', speechAccount)
+
+param deployCosmosDB bool
+param cosmosEndpoint string
+param cosmosAccountName string
+var cosmosId = resourceId(subscription().subscriptionId, resourceGroup().name, 'Microsoft.DocumentDB/databaseAccounts', cosmosAccountName)
 
 param webApiClientId string
 param frontendClientId string
@@ -130,7 +133,8 @@ resource appServiceWebConfig 'Microsoft.Web/sites/config@2022-09-01' = {
         }
         {
           name: 'ChatStore:Cosmos:ConnectionString'
-          value: cosmosConnectString
+          value: deployCosmosDB ? 'AccountEndpoint=${cosmosEndpoint};AccountKey=${listKeys(cosmosId, '2023-04-15').primaryMasterKey}' : ''
+          // cosmosConnectString
         }
         {
           name: 'AzureSpeech:Region'

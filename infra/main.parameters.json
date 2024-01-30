@@ -22,7 +22,18 @@
     },
     "webApiClientId":{
       "value": "${WEBAPI_CLIENTID}"
+    },
+    "memoryStore":{
+      "value": "${MEMORY_STORE=AzureCognitiveSearch}"
+    },
+    "deployCosmosDB":{
+      "value": "${DEPLOY_COSMOSDB=false}"
+    },
+    "deploySpeechServices":{
+      "value": "${DEPLOY_SPEECH_SERVICES=false}"
+    },
+    "deployWebSearcherPlugin":{
+      "value": "${DEPLOY_WEB_SEARCHER_PLUGIN=false}"
     }
-
   }
 }

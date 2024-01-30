@@ -8,6 +8,11 @@ param strorageAccount string
 var strorageAccountId = resourceId(subscription().subscriptionId, resourceGroup().name,
   'Microsoft.Storage/storageAccounts', strorageAccount)
 
+@description('Location of the websearcher plugin to deploy')
+#disable-next-line no-hardcoded-env-urls
+param webSearcherPackageUri string = 'https://aka.ms/copilotchat/websearcher/latest'
+param deployPackages bool = true
+
 resource functionAppWebSearcherPlugin 'Microsoft.Web/sites@2022-09-01' = {
   name: name
   location: location
@@ -51,6 +56,18 @@ resource functionAppWebSearcherPluginConfig 'Microsoft.Web/sites/config@2022-09-
       }
     ]
   }
+}
+
+resource functionAppWebSearcherDeploy 'Microsoft.Web/sites/extensions@2022-09-01' = if (deployPackages) {
+  name: 'MSDeploy'
+  kind: 'string'
+  parent: functionAppWebSearcherPlugin
+  properties: {
+    packageUri: webSearcherPackageUri
+  }
+  dependsOn: [
+    functionAppWebSearcherPluginConfig
+  ]
 }
 
 resource bingSearchService 'Microsoft.Bing/accounts@2020-06-10' = {

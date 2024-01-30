@@ -47,7 +47,7 @@ param deployWebSearcherPlugin bool = false
   'AzureCognitiveSearch'
   'Qdrant'
 ])
-param memoryStore string = 'Qdrant'
+param memoryStore string = 'AzureCognitiveSearch'
 
 @description('Whether to deploy Cosmos DB for persistent chat storage')
 param deployCosmosDB bool = false
@@ -133,7 +133,9 @@ module api './app/api.bicep' = {
     virtualNetworkId0: memoryStore == 'Qdrant' ? virtualNetwork.outputs.id0 : ''
     appServiceQdrantDefaultHost: memoryStore == 'Qdrant' ? appServiceQdrant.outputs.defaultHost : ''
     deployCosmosDB: deployCosmosDB
-    cosmosConnectString: deployCosmosDB ? cosmos.outputs.cosmosConnectString : ''
+    cosmosAccountName: deployCosmosDB ? cosmos.outputs.accountName : ''
+    cosmosEndpoint: deployCosmosDB ? cosmos.outputs.endpoint : ''
+    // cosmosConnectString: deployCosmosDB ? cosmos.outputs.cosmosConnectString : ''
     deploySpeechServices: deploySpeechServices
     speechAccount: deploySpeechServices ? speechAccount.outputs.name : ''
     azureAdTenantId: azureAdTenantId
@@ -152,7 +154,7 @@ module web './core/host/staticwebapp.bicep' = {
   }
 }
 
-module storage 'app/storage.bicep' = {
+module storage 'app/storageaccount.bicep' = {
   scope: rg
   name: 'storage'
   params: {
@@ -208,6 +210,7 @@ module functionAppWebSearcherPlugin './app/searcherplugin.bicep' = if (deployWeb
     appInsightsInstrumentationKey: applicationInsights.outputs.instrumentationKey
     appServicePlanId: appServicePlan.outputs.id
     strorageAccount: storage.outputs.name
+    deployPackages: deployWebSearcherPlugin
   }
 }
 
@@ -265,12 +268,25 @@ module appServiceQdrant 'app/qdrant.bicep' = if (memoryStore == 'Qdrant') {
   }
 }
 
-module cosmos 'app/cosmosdb.bicep' = if (deployCosmosDB) {
+param databaseName string = 'CopilotChat'
+module cosmos 'app/cosmossql.bicep' = if (deployCosmosDB) {
   scope: rg
   name: 'cosmosdb'
   params: {
     location: location
-    name: !empty(cosmosDbAccountName) ? cosmosDbAccountName : 'cosmos-${resourceToken}'
+    accountName: !empty(cosmosDbAccountName) ? cosmosDbAccountName : 'cosmos-${resourceToken}'
+    keyVaultName: keyVault.outputs.name
+    databaseName: databaseName
+  }
+}
+
+param keyVaultName string = ''
+module keyVault './core/security/keyvault.bicep' = {
+  scope: rg
+  name: 'keyvalut'
+  params: {
+    location: location
+    name: !empty(keyVaultName) ? keyVaultName : '${abbrs.keyVaultVaults}${resourceToken}'
   }
 }
 
@@ -290,6 +306,10 @@ output REACT_APP_WEB_BASE_URL string = web.outputs.uri
 output AZURE_AD_TENANTID string = azureAdTenantId
 output FRONTEND_CLIENTID string = frontendClientId
 output WEBAPI_CLIENTID string = webApiClientId
+output DEPLOY_WEB_SEARCHER_PLUGIN bool = deployWebSearcherPlugin
+output DEPLOY_COSMOSDB bool = deployCosmosDB
+output DEPLOY_SPEECH_SERVICES bool = deploySpeechServices
+output MEMORY_STORE string = memoryStore
 
 // output webapiUrl string = api.outputs.weburl
 // output webapiName string = api.outputs.webname
